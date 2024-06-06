@@ -1,0 +1,24 @@
+
+
+#product-form {
+    display: none;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  #product-form.show {
+    display: block;
+  }
+  
+  .icon-box {
+    font-size: 40px;
+  }
+  
+  .cont {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logout {
+    font-size: 20px;
+    margin-left: 75%;
+  }
