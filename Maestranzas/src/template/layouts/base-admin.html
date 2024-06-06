@@ -13,58 +13,61 @@
     {% endblock %}
 </head>
 <body>
-    <aside>
-
-        <div class="d-flex flex-column flex-shrink-0 p-3 bg-light">
-            <span class="fs-6">Maestranzas Unidos S.A.</span>
-            </a>
-            <hr>
-            <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item">
-                <a href="/admin" class="nav-link {{ 'active' if request.path == '/admin' else '' }}" aria-current="page">
-                Inicio
+    <div class="contenedor">
+        <aside>
+            <div class=" flex-column flex-shrink-0 ">
+            <img src="{{ url_for('static',filename='img/box.png') }}" alt="icon" width="32" height="32">
+                <span class="encabezado">Maestranzas Unidos S.A.</span>
                 </a>
-            </li>
-            <li>
-                <a href="#" class="nav-link ">
-                    Productos
+                <hr>
+                <ul class="nav nav-pills flex-column mb-auto">
+                <li>
+                    <a href="/admin" class="nav-link {{ 'active' if request.path == '/admin' else '' }}">
+                    Inicio
+                    </a>
+                </li>
+                <li>
+                    <a href="/productos" class="nav-link {{ 'active' if request.path == '/productos' else '' }}"">
+                        Productos
+                    </a>
+                </li>
+                <li>
+                    <a href="/modificaciones" class="nav-link {{ 'active' if request.path == '/modificaciones' else '' }}"">
+                    Modificaciones
+                    </a>
+                </li>
+                <li>
+                    <a href="/usuarios" class="nav-link {{ 'active' if request.path == '/usuarios' else '' }}">
+                    Usuarios
+                    </a>
+                </li>
+                <li>
+                    <a href="/registro" class="nav-link {{ 'active' if request.path == '/registro' else '' }}">
+                    Agregar Usuario
+                    </a>
+                </li>
+                </ul>
+                
+                <div class="dropdown">
+                    <hr>
+                <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="{{ url_for('static',filename='img/usuario.png') }}" alt="" width="32" height="32" class="rounded-circle me-2">
+                    <strong>{{ first_name }}</strong>
                 </a>
-            </li>
-            <li>
-                <a href="#" class="nav-link ">
-                Modificaciones
-                </a>
-            </li>
-            <li>
-                <a href="#" class="nav-link ">
-                Usuarios
-                </a>
-            </li>
-            <li>
-                <a href="/registro" class="nav-link {{ 'active' if request.path == '/registro' else '' }}">
-                Agregar Usuario
-                </a>
-            </li>
-            </ul>
-            
-            <div class="dropdown">
-
-            <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="{{ url_for('static',filename='img/usuario.png') }}" alt="" width="32" height="32" class="rounded-circle me-2">
-                <strong>{{ first_name }}</strong>
-            </a>
-            <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                <li><a class="dropdown-item" href="#">Ajustes</a></li>
-                <li><a class="dropdown-item" href="#">Perfil</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="/login">Cerra Sesión</a></li>
-            </ul>
+                <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                    <li><a class="dropdown-item" href="#">Ajustes</a></li>
+                    <li><a class="dropdown-item" href="#">Perfil</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/login">Cerra Sesión</a></li>
+                </ul>
+                </div>
             </div>
-        </div>
-    </aside>
-    {% block body %} 
-    
-    {% endblock %}
+        </aside>
+
+        {% block body %} 
+        
+        {% endblock %}
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
