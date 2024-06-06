@@ -1,0 +1,141 @@
+{% extends 'layouts/base-admin.html' %}
+
+{% block title %}Productos{% endblock %}
+
+{% block customCSS %} 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/inventario.css') }}">
+{% endblock %}
+
+{% block body %} 
+<main>
+    <!--div class="container my-4">
+        <div class="row align-items-center">
+            <div class="col d-flex align-items-center">
+                <i class="bi bi-plus-square-fill"></i>
+                <h1 class="ms-3">REGISTRAR</h1>
+            </div>
+            <div class="col-auto">
+                <a href="/inventario/editor" class="btn btn-secondary">SALIR</a>
+            </div>
+        </div>
+
+        <form id="product-form">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="product-id" class="form-label">Número de serie:</label>
+                    <input type="number" class="form-control" id="product-id" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="product-name" class="form-label">Nombre:</label>
+                    <input type="text" class="form-control" id="product-name" required>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="product-desc" class="form-label">Descripción:</label>
+                    <input type="text" class="form-control" id="product-desc" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="product-ubi" class="form-label">Ubicación:</label>
+                    <input type="text" class="form-control" id="product-ubi" required>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="product-cant" class="form-label">Cantidad:</label>
+                    <input type="number" class="form-control" id="product-cant" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="product-pdf" class="form-label">Archivo PDF:</label>
+                    <input type="file" class="form-control" id="product-pdf" accept="application/pdf" required>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="product-categ" class="form-label">Categoría:</label>
+                    <select class="form-control" id="product-categ" required>
+                        <option value="Categoría 1">Categoría 1</option>
+                        <option value="Categoría 2">Categoría 2</option>
+                        <option value="Categoría 3">Categoría 3</option>
+                        <option value="Categoría 4">Categoría 4</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-custom w-100">REGISTRAR</button>
+                </div>
+            </div>
+        </form>
+
+
+
+        <div id="product-alert" class="alert alert-danger d-none" role="alert">
+            Error: El número de serie ya existe.
+        </div>
+
+    </div-->
+    <div class="container my-4">
+        <header>
+            <div class="col d-flex align-items-center">
+                <i class="bi bi-box-seam-fill icon-box"></i>
+                <h1 class="ms-3">INVENTARIO</h1>
+            </div>
+        </header>
+
+        <div class="table-responsive mt-4">
+            <div class="search">
+                <form class="d-flex mb-4" class="search" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Buscar producto" aria-label="Search">
+                </form>
+            </div>
+            <div class="order d-flex">
+                <p>Ordenar por:</p>
+                <div class="dropdown mx-2 mb-3">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Número de serie</a></li>
+                        <li><a class="dropdown-item" href="#">Nombre</a></li>
+                        <li><a class="dropdown-item" href="#">Descripción</a></li>
+                        <li><a class="dropdown-item" href="#">Ubicación</a></li>
+                        <li><a class="dropdown-item" href="#">Cantidad</a></li>
+                        <li><a class="dropdown-item" href="#">Ficha técnica</a></li>
+                        <li><a class="dropdown-item" href="#">Categoría</a></li>
+                    </ul>
+                </div>
+                {% if role == 'admin' %}
+                <div class="col-auto">
+                    <a href="/add_product" class="btn btn-secondary">AGREGAR</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <table class="table" id="product-table">
+                <thead>
+                    <tr>
+                        <th>Número de serie</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Ubicación</th>
+                        <th>Cantidad</th>
+                        <th>Ficha técnica</th>
+                        <th>Categoría</th>
+                        {% if role == 'editor' %}
+                        <th>Acciones </th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- productos -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+<script src="{{ url_for('static', filename='js/inventario.js') }}"></script>
+
+{% endblock %}
