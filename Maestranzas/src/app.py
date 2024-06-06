@@ -30,6 +30,7 @@ def login():
             session['id_rol'] = account[1]
             session['first_name'] = account[4]
             session['username'] = account[2]
+            session['user_data'] = account
 
             if session['id_rol'] == 1:
                 return redirect(url_for('admin'))
@@ -62,6 +63,34 @@ def admin():
 def registro():
     if 'username' in session:
         return render_template('registro.html', first_name=session['first_name'])
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/productos')
+def producto():
+    if 'username' in session:
+        return render_template('productos.html', first_name=session['first_name'])
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/modificaciones')
+def modificacion():
+    if 'username' in session:
+        return render_template('modificaciones.html', first_name=session['first_name'])
+    else:
+        return redirect(url_for('login'))
+
+#Arreglar
+@app.route('/usuarios',methods=["GET", "POST"])
+def mostrar_usuario():
+
+    cur = db.connection.cursor()
+    cur.execute('SELECT * FROM user')
+    usuarios = cur.fetchall()
+    cur.close()
+    #user_data = session['user_data']
+    if 'username' in session:
+        return render_template('usuarios.html', first_name=session['first_name'],usuarios=usuarios)
     else:
         return redirect(url_for('login'))
 
