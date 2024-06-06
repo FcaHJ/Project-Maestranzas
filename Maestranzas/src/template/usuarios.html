@@ -1,0 +1,162 @@
+{% extends 'layouts/base-admin.html' %}
+
+{% block title %}Usuarios{% endblock %}
+
+{% block customCSS %} 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/usuarios.css') }}">
+{% endblock %}
+
+{% block body %} 
+<!--main>
+    <div class="usuarios">
+        <h1>Lista de Usuarios</h1>
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Rol</th>
+                    <th>Nombre de Usuario</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    </tr>
+            </thead>
+            <tbody>
+                {% if usuarios %}
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.id_rol }}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.first_name }}</td>
+                    <td>{{ usuario.last_name }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5">No hay usuarios para mostrar.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div-->
+<main>
+    <div class="users-table">
+        <h2>Lista de Usuarios</h2>
+        {% if usuarios %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre de Usuario</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Rol</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.first_name }}</td>
+                    <td>{{ usuario.last_name }}</td>
+                    <td>
+                        {% if usuario.role_id == 1 %}
+                        Admin
+                        {% elif usuario.role_id == 2 %}
+                        Usuario
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                            data-bs-target="#editUser{{ usuario.id }}">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <!-- Modal de edición -->
+                        <div class="modal fade" id="editUser{{ usuario.id }}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Editar Usuario</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="/edit_user/{{ usuario.id }}" method="POST">
+                                            <div class="mb-3">
+                                                <label for="editUsername" class="form-label">Nombre de
+                                                    Usuario</label>
+                                                <input type="text" class="form-control" id="editUsername"
+                                                    name="editUsername" value="{{ usuario.username }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editFirstName" class="form-label">Nombre</label>
+                                                <input type="text" class="form-control" id="editFirstName"
+                                                    name="editFirstName" value="{{ usuario.first_name }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editLastName" class="form-label">Apellido</label>
+                                                <input type="text" class="form-control" id="editLastName"
+                                                    name="editLastName" value="{{ usuario.last_name }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editIdRole" class="form-label">Rol</label>
+                                                <select class="form-control" id="editIdRole" name="editIdRole">
+                                                    <option value="1" {% if usuario.id_rol==1 %} selected {% endif
+                                                        %}>Admin</option>
+                                                    <option value="2" {% if usuario.id_rol==2 %} selected {% endif
+                                                        %}>Usuario</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Cancelar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#confirmDelete{{ usuario.id }}">
+                            <i class="bi bi-trash3-fill"></i>
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="confirmDelete{{ usuario.id }}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Confirmación de Borrado</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        ¿Está seguro de que desea eliminar este usuario?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                        <form id="deleteForm{{ usuario.id }}"
+                                            action="/delete_user/{{ usuario.id }}" method="post">
+                                            <button type="submit" class="btn btn-danger">Confirmar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay usuarios</p>
+        {% endif %}
+</main>
+{% endblock %}
