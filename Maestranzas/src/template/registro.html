@@ -8,46 +8,43 @@
 {% endblock %}
 
 {% block body %} 
-<form class="form-signin"  action="/crear-registro" method="POST">
-    <img class="mb-4" src="{{ url_for('static',filename='img/nuevo-usuario.png') }}" alt="icon_user" width="72" height="72">
-    <h1 class="h3 mb-3 fw-normal">Agregar Nuevo</h1>
-    
-    {% with messages = get_flashed_messages() %}
+<main>
+    <form class="form-signin"  action="/crear-registro" method="POST">
+        <img class="mb-4" src="{{ url_for('static',filename='img/nuevo-usuario.png') }}" alt="icon_user" width="72" height="72">
+        <h1 class="h3 mb-3 fw-normal">Agregar Nuevo</h1>
         
-            {% if messages %}
-            <br>
-                {% for message in messages %}
-                    <div class="alert alert-success alert-dissmissible" role="alert">
-                        <strong>{{ message }}</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-
-        {% endwith %}
-
-    <!--<div class="form-floating">
-        <input type="text" class="form-control" id="username" name="username" placeholder="username">
-        <label for="username">Nombre de Usuario</label>
-    </div>-->
-
-    <div class="form-floating">
-        <input type="text" class="form-control" id="first_name" name="first_name" placeholder="first_name">
-        <label for="first_name">Nombre</label>
-    </div>
-
-    <div class="form-floating">
-        <input type="text" class="form-control" id="last_name" name="last_name" placeholder="last_name">
-        <label for="last_name">Apellido</label>
-    </div>
+        {% with messages = get_flashed_messages() %}
+            
+                {% if messages %}
+                <br>
+                    {% for message in messages %}
+                        <div class="alert alert-success alert-dissmissible" role="alert">
+                            <strong>{{ message }}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
     
-    <div class="form-floating">
-        <select class="form-select" id="id_rol" name="id_rol" aria-label="Default select example">
-            <option selected disabled>Rol</option>
-            <option value="1" id="id_rol" name="id_rol">Admin</option>
-            <option value="2" id="id_rol" name="id_rol">Usuario</option>
-          </select>
-    </div>
-    <button class="w-100 btn-submit btn-lg btn-primary" type="submit">Agregar</button>
-</form>
+            {% endwith %}
+    
+        <div class="form-floating">
+            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="first_name">
+            <label for="first_name">Nombre</label>
+        </div>
+    
+        <div class="form-floating">
+            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="last_name">
+            <label for="last_name">Apellido</label>
+        </div>
+        
+        <div class="form-floating">
+            <select class="form-select" id="id_rol" name="id_rol" aria-label="Default select example">
+                <option selected disabled>Rol</option>
+                <option value="1" id="id_rol" name="id_rol">Admin</option>
+                <option value="2" id="id_rol" name="id_rol">Usuario</option>
+              </select>
+        </div>
+        <button class="w-100 btn-submit btn-lg btn-primary" type="submit">Agregar</button>
+    </form>
+</main>
 {% endblock %}
