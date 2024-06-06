@@ -1,0 +1,58 @@
+{% extends 'layouts/base-admin.html' %}
+
+{% block title %}Productos{% endblock %}
+
+{% block customCSS %} 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block body %}
+<main>
+    <div class="container my-4">
+        <header>
+            <div class="col align-items-center">
+                <i class="bi bi-box-seam-fill icon-box"></i>
+                <h1 class="ms-3">MODIFICACIONES</h1>
+            </div>
+        </header>
+
+        <div class="table-responsive mt-4">
+            <div class="search">
+                <form class="d-flex mb-4" class="search" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
+                </form>
+            </div>
+            <div class="order d-flex">
+                <p>Ordenar por:</p>
+                <div class="dropdown mx-2 mb-3">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Fecha</a></li>
+                        <li><a class="dropdown-item" href="#">Ubicación</a></li>
+                        <li><a class="dropdown-item" href="#">Cantidad</a></li>
+                        <li><a class="dropdown-item" href="#">Categoría</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <table class="table" id="modification-table">
+                <thead>
+                    <tr>
+                        <th>Número de serie Producto</th>
+                        <th>Responsable</th>
+                        <th>Fecha</th>
+                        {% if role == 'editor' %}
+                        <th>Acciones </th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- productos -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}
