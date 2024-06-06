@@ -1,0 +1,38 @@
+.usuario{
+     font-weight: 600;
+     color: aliceblue;
+     padding-right: 10px;
+}
+#navbarNav{
+    padding-left: 1rem;
+    border-left: aliceblue 1px solid;
+}
+.nav-link{
+    color: aliceblue;
+}
+.nav-link:hover{
+    color: rgb(210, 224, 235);
+}
+.nav-item:hover{
+    font-size: large;
+    font-weight: 500;
+}
+
+.logout{
+    background-color:rgb(100, 176, 247);
+    border-radius: 8px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+#derecha{
+    position: absolute;
+    right: 0;
+}
+.btn{
+    font-weight: 500;
+}
+.btn:hover{
+    background-color:rgb(62, 159, 250);
+    border-radius: 8px;
+    font-weight: 600;
+}
