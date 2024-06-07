@@ -8,38 +8,6 @@
 {% endblock %}
 
 {% block body %} 
-<!--main>
-    <div class="usuarios">
-        <h1>Lista de Usuarios</h1>
-        <table class="tabla">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Rol</th>
-                    <th>Nombre de Usuario</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    </tr>
-            </thead>
-            <tbody>
-                {% if usuarios %}
-                {% for usuario in usuarios %}
-                <tr>
-                    <td>{{ usuario.id }}</td>
-                    <td>{{ usuario.id_rol }}</td>
-                    <td>{{ usuario.username }}</td>
-                    <td>{{ usuario.first_name }}</td>
-                    <td>{{ usuario.last_name }}</td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="5">No hay usuarios para mostrar.</td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
-    </div-->
 <main>
     <div class="users-table">
         <h2>Lista de Usuarios</h2>
@@ -52,8 +20,8 @@
                     <th>Nombre</th>
                     <th>Apellido</th>
                     <th>Rol</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
                 </tr>
             </thead>
             <tbody>
@@ -64,9 +32,9 @@
                     <td>{{ usuario.first_name }}</td>
                     <td>{{ usuario.last_name }}</td>
                     <td>
-                        {% if usuario.role_id == 1 %}
+                        {% if usuario.id_rol == 1 %}
                         Admin
-                        {% elif usuario.role_id == 2 %}
+                        {% elif usuario.id_rol == 2 %}
                         Usuario
                         {% endif %}
                     </td>
@@ -75,7 +43,7 @@
                             data-bs-target="#editUser{{ usuario.id }}">
                             <i class="bi bi-pencil-fill"></i>
                         </button>
-                        <!-- Modal de edición -->
+                        <!-- Modal de edición usuario-->
                         <div class="modal fade" id="editUser{{ usuario.id }}" tabindex="-1"
                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -126,7 +94,7 @@
                             data-bs-target="#confirmDelete{{ usuario.id }}">
                             <i class="bi bi-trash3-fill"></i>
                         </button>
-                        <!-- Modal -->
+                        <!-- Modal Eliminacion usuario-->
                         <div class="modal fade" id="confirmDelete{{ usuario.id }}" tabindex="-1"
                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -137,7 +105,7 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        ¿Está seguro de que desea eliminar este usuario?
+                                        ¿Está seguro de que desea eliminar a {{ usuario.first_name }}?
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
