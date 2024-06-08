@@ -88,11 +88,9 @@ def mostrar_usuario():
     cur.execute('SELECT * FROM user')
     usuarios = cur.fetchall()
     cur.close()
-    #user_data = session['user_data']
-    if 'username' in session:
-        return render_template('usuarios.html', first_name=session['first_name'],usuarios=usuarios)
-    else:
-        return redirect(url_for('login'))
+
+    return render_template('usuarios.html', first_name=session['first_name'],usuarios=usuarios)
+
 
 @app.route('/crear-registro', methods=['GET', 'POST'])
 def crear_registro():
