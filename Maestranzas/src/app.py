@@ -30,7 +30,6 @@ def login():
             session['id_rol'] = account[1]
             session['first_name'] = account[4]
             session['username'] = account[2]
-            session['user_data'] = account
 
             if session['id_rol'] == 1:
                 return redirect(url_for('admin'))
@@ -88,9 +87,11 @@ def mostrar_usuario():
     cur.execute('SELECT * FROM user')
     usuarios = cur.fetchall()
     cur.close()
-
-    return render_template('usuarios.html', first_name=session['first_name'],usuarios=usuarios)
-
+    #user_data = session['user_data']
+    if 'username' in session:
+        return render_template('usuarios.html', first_name=session['first_name'],usuarios=usuarios)
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/crear-registro', methods=['GET', 'POST'])
 def crear_registro():
@@ -101,8 +102,8 @@ def crear_registro():
         last_name = request.form['last_name']
 
         if first_name and last_name:
-            #Creacion del nombre de usuario con 1era letra del nombre y apellido completo
-            username = f"{first_name[0].lower()}{last_name.lower()}"
+            #Creacion del nombre de usuario con 3 primeras letras del nombre y apellido completo
+            username = f"{first_name[3].lower()}{last_name.lower()}"
 
         cur = db.connection.cursor()
         cur.execute('INSERT INTO user(id_rol, username, password, first_name, last_name) VALUES(%s,%s,%s,%s,%s)',(id_rol,username,password,first_name, last_name))
