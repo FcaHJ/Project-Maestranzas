@@ -2,6 +2,7 @@ html, body {
     height: 100%;
     margin: 0;
     box-sizing: border-box;
+    background-color: #eeeeee;
 }
 .contenedor{
     margin: auto;
@@ -16,6 +17,8 @@ aside {
     padding: 12px;
     background-color: #f8f9fa;
     box-shadow: 0em 0em 1em rgba(0, 0, 0, 0.3);
+    overflow: hidden; /* Evita que la barra lateral tenga scroll */
+    flex-shrink: 0; /* Impide que la barra lateral se encoja */
 }
 .encabezado{
     font-weight: 700;
@@ -50,4 +53,5 @@ aside {
 main{
     width: 80%;
     padding: 1rem;
+    overflow-y: auto;
 }
