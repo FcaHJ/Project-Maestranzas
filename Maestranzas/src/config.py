@@ -8,6 +8,7 @@ class DevelopmentConfig(Config):
     MYSQL_USER = 'root'
     MYSQL_PASSWORD = ''
     MYSQL_DB = 'maestranzas'
+    MYSQL_CURSORCLASS = 'DictCursor'
 
 config = {
     'development': DevelopmentConfig
