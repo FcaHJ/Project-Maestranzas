@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} {% endblock %}</title>
     <!-- Bootstrap -->
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     
@@ -13,32 +12,90 @@
     {% endblock %}
 </head>
 <body>
-    <nav class="navbar bg-primary navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-        <h4 class="usuario">{{ first_name }}</h4>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/home">Inicio</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">####</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">###</a>
-            </li>
-            </ul>
-            <ul class="navbar-nav" id="derecha">
-                <li class="nav-item logout"> 
-                    <a class="btn" href="/">Cerrar Sesión</a>   
+    <div class="contenedor">
+        <aside>
+            <div class=" flex-column flex-shrink-0 ">
+            <img src="{{ url_for('static',filename='img/box.png') }}" alt="icon" width="32" height="32">
+                <span class="encabezado">Maestranzas Unidos S.A.</span>
+                </a>
+                <hr>
+                <ul class="nav nav-pills flex-column mb-auto">
+                {% if g.user and g.user['id_rol'] == 3 %} 
+                <li>
+                    <a href="/home" class="nav-link {{ 'active' if request.path == '/home' else '' }}">
+                    Inicio
+                    </a>
                 </li>
-            </ul>
-        </div>
-        </div>
-    </nav>
-    {% block body %} 
-    
-    {% endblock %}
+                <li>
+                    <a href="/productos" class="nav-link {{ 'active' if request.path == '/productos' else '' }}">
+                        Productos
+                    </a>
+                </li>
+                {% elif g.user and g.user['id_rol'] == 2 %} 
+                <li>
+                    <a href="/home" class="nav-link {{ 'active' if request.path == '/home' else '' }}">
+                    Inicio
+                    </a>
+                </li>
+                <li>
+                    <a href="/productos" class="nav-link {{ 'active' if request.path == '/productos' else '' }}">
+                        Productos
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link {{ 'active' if request.path == '#' else '' }}">
+                    Modificaciones
+                    </a>
+                </li>
+                {% elif g.user and g.user['id_rol'] == 1 %} 
+                <li>
+                    <a href="/admin" class="nav-link {{ 'active' if request.path == '/admin' else '' }}">
+                    Inicio
+                    </a>
+                </li>
+                <li>
+                    <a href="/productos" class="nav-link {{ 'active' if request.path == '/productos' else '' }}"">
+                        Productos
+                    </a>
+                </li>
+                <li>
+                    <a href="/modificaciones" class="nav-link {{ 'active' if request.path == '/modificaciones' else '' }}"">
+                    Modificaciones
+                    </a>
+                </li>
+                <li>
+                    <a href="/usuarios" class="nav-link {{ 'active' if request.path == '/usuarios' else '' }}">
+                    Usuarios
+                    </a>
+                </li>
+                <li>
+                    <a href="/registro" class="nav-link {{ 'active' if request.path == '/registro' else '' }}">
+                    Agregar Usuario
+                    </a>
+                </li>
+                {% endif %}
+                </ul>
+                
+                <div class="dropdown">
+                    <hr>
+                <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="{{ url_for('static',filename='img/usuario.png') }}" alt="" width="32" height="32" class="rounded-circle me-2">
+                    <strong>{{ first_name }}</strong>
+                </a>
+                <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                    <li><a class="dropdown-item" href="#">Ajustes</a></li>
+                    <li><a class="dropdown-item" href="#">Perfil</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/logout">Cerra Sesión</a></li>
+                </ul>
+                </div>
+            </div>
+        </aside>
+
+        {% block body %} 
+        
+        {% endblock %}
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
