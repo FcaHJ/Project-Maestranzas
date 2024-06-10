@@ -1,9 +1,9 @@
-{% extends 'layouts/base-admin.html' %}
+{% extends 'layouts/base-user.html' %}
 
 {% block title %}Usuarios{% endblock %}
 
 {% block customCSS %} 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/usuarios.css') }}">
 {% endblock %}
 
@@ -11,14 +11,26 @@
 <main>
     <div class="users-table">
         <h2>Lista de Usuarios</h2>
+        
         {% if usuarios %}
+        {% with messages = get_flashed_messages() %}    
+            {% if messages %}
+            <br>
+                {% for message in messages %}
+                    <div class="alert alert-warning alert-dissmissible" role="alert">
+                        <strong>{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <table class="table">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Nombre de Usuario</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
+                    <th>Nombre Completo</th>
+                    <th>Contraseña</th>
                     <th>Rol</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
@@ -29,13 +41,15 @@
                 <tr>
                     <td>{{ usuario.id }}</td>
                     <td>{{ usuario.username }}</td>
-                    <td>{{ usuario.first_name }}</td>
-                    <td>{{ usuario.last_name }}</td>
+                    <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
+                    <td>{{ usuario.password }}</td>
                     <td>
                         {% if usuario.id_rol == 1 %}
                         Admin
                         {% elif usuario.id_rol == 2 %}
-                        Usuario
+                        Editor
+                        {% elif usuario.id_rol == 3 %}
+                        Visor
                         {% endif %}
                     </td>
                     <td>
@@ -54,30 +68,40 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="/edit_user/{{ usuario.id }}" method="POST">
+                                        <form action="/editar_usuario/{{ usuario.id }}" method="POST">
                                             <div class="mb-3">
-                                                <label for="editUsername" class="form-label">Nombre de
+                                                <label for="editUsername{{ usuario.id }}" class="form-label">Nombre de
                                                     Usuario</label>
-                                                <input type="text" class="form-control" id="editUsername"
+                                                <input type="text" class="form-control" id="editUsername{{ usuario.id }}"
                                                     name="editUsername" value="{{ usuario.username }}">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="editFirstName" class="form-label">Nombre</label>
-                                                <input type="text" class="form-control" id="editFirstName"
-                                                    name="editFirstName" value="{{ usuario.first_name }}">
+                                                <label for="editName{{ usuario.id }}" class="form-label">Nombre</label>
+                                                <input type="text" class="form-control" id="editName{{ usuario.id }}"
+                                                    name="editName" value="{{ usuario.first_name }}">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="editLastName" class="form-label">Apellido</label>
-                                                <input type="text" class="form-control" id="editLastName"
+                                                <label for="editLastName{{ usuario.id }}" class="form-label">Apellido</label>
+                                                <input type="text" class="form-control" id="editLastName{{ usuario.id }}"
                                                     name="editLastName" value="{{ usuario.last_name }}">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="editIdRole" class="form-label">Rol</label>
-                                                <select class="form-control" id="editIdRole" name="editIdRole">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="generatePassword{{ usuario.id }}" name="generatePassword">
+                                                    <label class="form-check-label" for="generatePassword{{ usuario.id }}">
+                                                        Generar nueva contraseña
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editIdRol{{ usuario.id }}" class="form-label">Rol</label>
+                                                <select class="form-control" id="editIdRol{{ usuario.id }}" name="editIdRol">
                                                     <option value="1" {% if usuario.id_rol==1 %} selected {% endif
                                                         %}>Admin</option>
                                                     <option value="2" {% if usuario.id_rol==2 %} selected {% endif
-                                                        %}>Usuario</option>
+                                                        %}>Editor</option>
+                                                    <option value="3" {% if usuario.id_rol==3 %} selected {% endif
+                                                        %}>Visor</option>
                                                 </select>
                                             </div>
                                             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
@@ -105,13 +129,11 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        ¿Está seguro de que desea eliminar a {{ usuario.first_name }}?
+                                        ¿Está seguro de que desea eliminar a este usuario?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Cancelar</button>
-                                        <form id="deleteForm{{ usuario.id }}"
-                                            action="/delete_user/{{ usuario.id }}" method="post">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <form id="deleteForm" action="/eliminar_usuario/{{ usuario.id }}" method="POST">
                                             <button type="submit" class="btn btn-danger">Confirmar</button>
                                         </form>
                                     </div>
