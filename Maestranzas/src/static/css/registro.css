@@ -24,7 +24,13 @@ body {
     margin-top: 10px;
     margin-bottom: 5px;
 }
-
+.help-text{
+  display: block;
+  margin-left: 10px;
+  text-align: left !important;
+  font-size: 0.9em;
+  color: #b80b0b;
+}
 .btn-submit{
     margin-top: 10px;
     margin-bottom: 10px;
