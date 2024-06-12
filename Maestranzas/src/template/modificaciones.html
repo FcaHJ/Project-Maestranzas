@@ -1,9 +1,9 @@
-{% extends 'layouts/base-admin.html' %}
+{% extends 'layouts/base-user.html' %}
 
 {% block title %}Modificaciones{% endblock %}
 
 {% block customCSS %} 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -31,27 +31,35 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="#">Fecha</a></li>
                         <li><a class="dropdown-item" href="#">Ubicación</a></li>
-                        <li><a class="dropdown-item" href="#">Cantidad</a></li>
                         <li><a class="dropdown-item" href="#">Categoría</a></li>
                     </ul>
                 </div>
             </div>
 
+            {% if modificaciones %}
             <table class="table" id="modification-table">
                 <thead>
                     <tr>
-                        <th>Número de serie Producto</th>
+                        <th>ID</th>
+                        <th>Producto</th>
                         <th>Responsable</th>
-                        <th>Fecha</th>
-                        {% if role == 'editor' %}
-                        <th>Acciones </th>
-                        {% endif %}
+                        <th>Fecha y Hora</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- productos -->
+                    {% for mod in modificaciones %}
+                    <tr>
+                        <td>{{ mod.id }}</td>
+                        <td>{{ mod.producto_nombre }}</td>
+                        <td>{{ mod.username }}</td>
+                        <td>{{ mod.fecha_hora }}</td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
+            {% else %}
+            <p>No hay modificaciones registradas.</p>
+            {% endif %}
         </div>
     </div>
 </main>
