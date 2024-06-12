@@ -8,9 +8,14 @@
   #product-form.show {
     display: block;
   }
+  .btn-agregar-p{
+    display: flex;
+    justify-content: right;
+    margin-bottom: 8px;
+  }
   
-  .icon-box {
-    font-size: 40px;
+  .img-agregar {
+    padding-right: 4px;
   }
   
   .cont {
