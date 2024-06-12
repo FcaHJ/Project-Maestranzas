@@ -30,6 +30,7 @@
                     <th>#</th>
                     <th>Nombre de Usuario</th>
                     <th>Nombre Completo</th>
+                    <th>RUT</th>
                     <th>Contraseña</th>
                     <th>Rol</th>
                     <th>Editar</th>
@@ -42,6 +43,7 @@
                     <td>{{ usuario.id }}</td>
                     <td>{{ usuario.username }}</td>
                     <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
+                    <td>{{ usuario.run }}</td>
                     <td>{{ usuario.password }}</td>
                     <td>
                         {% if usuario.id_rol == 1 %}
@@ -83,7 +85,13 @@
                                             <div class="mb-3">
                                                 <label for="editLastName{{ usuario.id }}" class="form-label">Apellido</label>
                                                 <input type="text" class="form-control" id="editLastName{{ usuario.id }}"
-                                                    name="editLastName" value="{{ usuario.last_name }}">
+                                                    name="editLastName" value="{{ usuario.last_name }}"> 
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editRut{{ usuario.run }}" class="form-label">Rut</label>
+                                                <input type="text" class="form-control" id="editRut{{ usuario.id }}"
+                                                    name="editRut" value="{{ usuario.run }}" pattern="\d{8,9}">
+                                                    <small class="help-text">Sin puntos Ni guión (Formato esperado: 123456789)</small>
                                             </div>
                                             <div class="mb-3">
                                                 <div class="form-check">

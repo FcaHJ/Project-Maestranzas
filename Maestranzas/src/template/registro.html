@@ -36,6 +36,12 @@
             <input type="text" class="form-control" id="last_name" name="last_name" placeholder="last_name" >
             <label for="last_name">Apellido</label>
         </div>
+
+        <div class="form-floating align-items-center">
+            <small class="help-text">Sin puntos Ni guión (Formato esperado: 123456789)</small>
+            <input type="text" class="form-control" id="run" name="run" placeholder="run"  pattern="\d{8,9}">
+            <label for="run" class="my-3">Rut</label>
+        </div>
         
         <div class="form-floating">
             <select class="form-select" id="id_rol" name="id_rol" aria-label="Default select example" required>
