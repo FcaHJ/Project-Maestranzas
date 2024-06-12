@@ -1,138 +1,219 @@
-{% extends 'layouts/base-admin.html' %}
+{% extends 'layouts/base-user.html' %}
 
 {% block title %}Productos{% endblock %}
 
 {% block customCSS %} 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/inventario.css') }}">
 {% endblock %}
 
 {% block body %} 
 <main>
-    <!--div class="container my-4">
-        <div class="row align-items-center">
-            <div class="col d-flex align-items-center">
-                <i class="bi bi-plus-square-fill"></i>
-                <h1 class="ms-3">REGISTRAR</h1>
-            </div>
-            <div class="col-auto">
-                <a href="/inventario/editor" class="btn btn-secondary">SALIR</a>
-            </div>
-        </div>
-
-        <form id="product-form">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="product-id" class="form-label">Número de serie:</label>
-                    <input type="number" class="form-control" id="product-id" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="product-name" class="form-label">Nombre:</label>
-                    <input type="text" class="form-control" id="product-name" required>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="product-desc" class="form-label">Descripción:</label>
-                    <input type="text" class="form-control" id="product-desc" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="product-ubi" class="form-label">Ubicación:</label>
-                    <input type="text" class="form-control" id="product-ubi" required>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="product-cant" class="form-label">Cantidad:</label>
-                    <input type="number" class="form-control" id="product-cant" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="product-pdf" class="form-label">Archivo PDF:</label>
-                    <input type="file" class="form-control" id="product-pdf" accept="application/pdf" required>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="product-categ" class="form-label">Categoría:</label>
-                    <select class="form-control" id="product-categ" required>
-                        <option value="Categoría 1">Categoría 1</option>
-                        <option value="Categoría 2">Categoría 2</option>
-                        <option value="Categoría 3">Categoría 3</option>
-                        <option value="Categoría 4">Categoría 4</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-12">
-                    <button type="submit" class="btn btn-custom w-100">REGISTRAR</button>
-                </div>
-            </div>
-        </form>
-
-
-
-        <div id="product-alert" class="alert alert-danger d-none" role="alert">
-            Error: El número de serie ya existe.
-        </div>
-
-    </div-->
-    <div class="container my-4">
-        <header>
-            <div class="col d-flex align-items-center">
-                <i class="bi bi-box-seam-fill icon-box"></i>
-                <h1 class="ms-3">INVENTARIO</h1>
-            </div>
-        </header>
+    <div class="product-table">
+        <h2>INVENTARIO</h2>
 
         <div class="table-responsive mt-4">
             <div class="search">
-                <form class="d-flex mb-4" class="search" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Buscar producto" aria-label="Search">
+                <form action="/buscar-producto" method="POST" class="d-flex mb-4 search" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Buscar producto" aria-label="Search" name="search_query">
                 </form>
             </div>
             <div class="order d-flex">
                 <p>Ordenar por:</p>
                 <div class="dropdown mx-2 mb-3">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Número de serie</a></li>
-                        <li><a class="dropdown-item" href="#">Nombre</a></li>
-                        <li><a class="dropdown-item" href="#">Descripción</a></li>
-                        <li><a class="dropdown-item" href="#">Ubicación</a></li>
-                        <li><a class="dropdown-item" href="#">Cantidad</a></li>
-                        <li><a class="dropdown-item" href="#">Ficha técnica</a></li>
-                        <li><a class="dropdown-item" href="#">Categoría</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='nombre') }}">Nombre</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='descripcion') }}">Descripción</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='ubicacion') }}">Ubicación</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='cantidad') }}">Cantidad</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='categoria') }}">Categoría</a></li>
                     </ul>
                 </div>
-                {% if role == 'admin' %}
-                <div class="col-auto">
-                    <a href="/add_product" class="btn btn-secondary">AGREGAR</a>
-                </div>
-                {% endif %}
             </div>
 
-            <table class="table" id="product-table">
+            {% if g.user and g.user['id_rol'] == 2 %}
+            <div class="btn-agregar-p">
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                    <img src="{{ url_for('static',filename='img/agregar.png') }}" class="img-agregar" alt="icon" width="32" height="32">Añadir
+                </button>
+            </div>
+            {% endif %}
+
+            {% if productos %}
+            {% if g.user and g.user['id_rol'] == 2 %}
+                {% with messages = get_flashed_messages() %}    
+                {% if messages %}
+                <br>
+                    {% for message in messages %}
+                        <div class="alert alert-warning alert-dissmissible" role="alert">
+                            <strong>{{ message }}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+            {% endif %}
+            
+            <table class="table">
                 <thead>
                     <tr>
-                        <th>Número de serie</th>
+                        <th>#</th>
+                        <th>N° de serie</th>
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Ubicación</th>
                         <th>Cantidad</th>
-                        <th>Ficha técnica</th>
-                        <th>Categoría</th>
-                        {% if role == 'editor' %}
-                        <th>Acciones </th>
+                        <th>Stock</th>
+                        {% if g.user and g.user['id_rol'] == 2 or g.user and g.user['id_rol'] == 1  %}
+                        <th>Modificar</th>
                         {% endif %}
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- productos -->
+                <!-- AGREGAR PDF(QUIZÁ)-->
+                <!-- productos-->
+                    {% for data in productos %}
+                    <tr>
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.nro_serie }}</td>
+                        <td>{{ data.nombre }}</td>
+                        <td>{{ data.descripcion }}</td>
+                        <td>{{ data.ubicacion }}</td>
+                        <td>{{ data.cantidad }}</td>
+                        <td>{{ data.categoria_nombre }}</td>
+                        <td>
+                            {% if g.user and g.user['id_rol'] == 2 or g.user and g.user['id_rol'] == 1 %}
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                data-bs-target="#editProduct{{ data.id }}">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <!-- CENTRAR BOTONES-->
+                            <!-- MODAL EDICION/MODIFICACION PRODUCTOS-->
+                            <div class="modal fade" id="editProduct{{ data.id }}" tabindex="-1"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Editar Productos</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/editar_producto/{{ data.id }}" method="POST">
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <label for="editNroSerie{{ data.id }}" class="form-label">Número de serie:</label>
+                                                        <input type="number" class="form-control" id="editNroSerie{{ data.id }}" name="editNroSerie"
+                                                        value="{{ data.nro_serie }}"required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="editNombre{{ data.id }}" class="form-label">Nombre:</label>
+                                                        <input type="text" class="form-control" id="editNombre{{ data.id }}" name="editNombre"
+                                                        value="{{ data.nombre }}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <label for="editDescripcion{{ data.id }}" class="form-label">Descripción:</label>
+                                                        <input type="text" class="form-control" id="editDescripcion{{ data.id }}" name="editDescripcion"
+                                                        value="{{ data.descripcion }}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <label for="editUbicacion{{ data.id }}" class="form-label">Ubicación:</label>
+                                                        <input type="text" class="form-control" id="editUbicacion{{ data.id }}" name="editUbicacion"
+                                                        value="{{ data.ubicacion }}" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="editCantidad{{ data.id }}" class="form-label">Cantidad:</label>
+                                                        <input type="number" class="form-control" id="editCantidad{{ data.id }}" name="editCantidad"
+                                                        value="{{ data.cantidad }}"required>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <label for="editCategoria{{ data.id }}" class="form-label">Categoría:</label>
+                                                        <select class="form-control" id="editCategoria{{ data.id }}" name="editCategoria" required>
+                                                            {% for categoria in categorias %}
+                                                            <option value="{{ categoria.id_categ }}" {% if data.categoria == categoria.id_categ %}selected{% endif %}>{{ categoria.descripcion }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>         
+                                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                    </tr>
                 </tbody>
             </table>
+            {% else %}
+            <p>No hay productos</p>
+            {% endif %}
+        </div>
+    </div>
+    <!--CENTRAR BOTONES-->
+    <!--MODAL AGREGAR PRODUCTOS-->
+    <div class="modal fade" id="addProductModal" tabindex="-1"aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2">Añadir Producto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/agregar_productos" method="POST">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="addNroSerie" class="form-label">Número de serie:</label>
+                                <input type="number" class="form-control" id="addNroSerie" name="addNroSerie" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="addNombre" class="form-label">Nombre:</label>
+                                <input type="text" class="form-control" id="addNombre" name="addNombre" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="addDescripcion" class="form-label">Descripción:</label>
+                                <input type="text" class="form-control" id="addDescripcion" name="addDescripcion" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="addUbicacion" class="form-label">Ubicación:</label>
+                                <input type="text" class="form-control" id="addUbicacion" name="addUbicacion" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="addCantidad" class="form-label">Cantidad:</label>
+                                <input type="number" class="form-control" id="addCantidad" name="addCantidad" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="addCategoria" class="form-label">Categoría:</label>
+                                <select class="form-control" id="addCategoria" name="addCategoria" required>
+                                    <option selected disabled>Seleccione</option>
+                                    {% for categoria in categorias %}
+                                    <option value="{{ categoria.id_categ }}">{{ categoria.descripcion }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>            
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Cancelar</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </main>
