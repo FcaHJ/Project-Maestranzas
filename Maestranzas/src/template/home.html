@@ -2,7 +2,12 @@
 
 {% block title %}Home{% endblock %}
 
+{% block customCSS %} 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+{% endblock %}
 
 {% block body %} 
-    <h1>----Contenodo usuario----/h1>
+<main>
+    <h1>----Contenido usuario----</h1>
+</main>
 {% endblock %}
