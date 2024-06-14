@@ -11,36 +11,36 @@
     <div class="container my-4">
         <header>
             <div class="col align-items-center">
-                <i class="bi bi-box-seam-fill icon-box"></i>
                 <h1 class="ms-3">MODIFICACIONES</h1>
             </div>
         </header>
 
         <div class="table-responsive mt-4">
             <div class="search">
-                <form class="d-flex mb-4" class="search" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
+                <form action="/buscar-modificacion" method="POST" class="d-flex mb-4 search" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Buscar modificación" aria-label="Search" name="search_query">
                 </form>
             </div>
-            <div class="order d-flex">
-                <p>Ordenar por:</p>
-                <div class="dropdown mx-2 mb-3">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Fecha</a></li>
-                        <li><a class="dropdown-item" href="#">Ubicación</a></li>
-                        <li><a class="dropdown-item" href="#">Categoría</a></li>
-                    </ul>
-                </div>
+            
+            <div class="dropdown ">
+                <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownProduct2" data-bs-toggle="dropdown" aria-expanded="false"> 
+                    <strong>Ordenar por:</strong>
+                </a>
+                <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownProduct2">
+                    <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='id') }}">ID</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='nro_serie') }}">N° serie</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='producto') }}">Producto</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='first_name') }}">Responsable</a></li>
+                </ul>
             </div>
+            
 
             {% if modificaciones %}
             <table class="table" id="modification-table">
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>N° serie producto</th>
                         <th>Producto</th>
                         <th>Responsable</th>
                         <th>Fecha y Hora</th>
@@ -50,8 +50,9 @@
                     {% for mod in modificaciones %}
                     <tr>
                         <td>{{ mod.id }}</td>
+                        <td>{{ mod.nro_serie }}</td>
                         <td>{{ mod.producto_nombre }}</td>
-                        <td>{{ mod.username }}</td>
+                        <td>{{ mod.first_name }} {{ mod.last_name }}</td>
                         <td>{{ mod.fecha_hora }}</td>
                     </tr>
                     {% endfor %}
