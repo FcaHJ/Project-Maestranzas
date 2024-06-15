@@ -1,5 +1,12 @@
 
+header{
+  position: relative;
+  
 
+}
+.search{
+  display: flex;
+}
 #product-form {
     display: none;
     transition: all 0.3s ease-in-out;
@@ -8,16 +15,20 @@
   #product-form.show {
     display: block;
   }
-  .btn-agregar-p{
+.btn-agregar-p{
+  display: flex;
+  justify-content: right;
+  margin-bottom: 8px;
+}
+  #btn-agregar{
+    padding: 10px;
+    margin-right: 1rem;
+  }
+  
+  .dropdown-product{
     display: flex;
-    justify-content: right;
-    margin-bottom: 8px;
+    justify-content: left;
   }
-  
-  .img-agregar {
-    padding-right: 4px;
-  }
-  
   .cont {
     display: flex;
     align-items: center;

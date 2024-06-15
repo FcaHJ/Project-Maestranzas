@@ -12,6 +12,8 @@ html, body {
     flex-wrap: wrap;
 }
 aside {
+    position: fixed;
+    left: 0;
     height: 100vh;
     width: 20%;
     padding: 12px;
@@ -51,7 +53,8 @@ aside {
     flex-shrink: 0 !important;
 }
 main{
+    margin-left: 20%;
     width: 80%;
-    padding: 1rem;
+    padding: 1rem 2rem;
     overflow-y: auto;
 }
