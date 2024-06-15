@@ -48,10 +48,11 @@ def login():
             session['id'] = account['id']
             session['id_rol'] = account['id_rol']
             session['first_name'] = account['first_name']
+            session['last_name'] = account['last_name']
             session['username'] = account['username']
 
             if session['id_rol'] == 1:
-                return redirect(url_for('admin'))
+                return redirect(url_for('mostrar_producto'))
             elif session['id_rol'] == 2:
                 return redirect(url_for('home'))
             elif session['id_rol'] == 3:
@@ -77,14 +78,6 @@ def home():
     else:
         return redirect(url_for('login'))
 
-
-@app.route('/admin')
-def admin():
-    if 'username' in session:
-        return render_template('admin.html', first_name=session['first_name'])
-    else:
-        return redirect(url_for('login'))
-
 @app.route('/registro')
 def registro():
     if 'username' in session:
@@ -96,7 +89,6 @@ def registro():
 @app.route('/productos')
 def mostrar_producto():
     if 'username' in session:
-        categorias = get_categories()
         sort_by = request.args.get('sort_by')
         if sort_by:
             if sort_by == 'nombre':
@@ -117,16 +109,16 @@ def mostrar_producto():
                     LEFT JOIN categorias c ON p.categoria = c.id_categ {order_by_clause}''')
             productos = cur.fetchall()
             cur.close()
-            return render_template('productos.html', first_name=session['first_name'],productos=productos,categorias=categorias)
+            return render_template('productos.html', first_name=session['first_name'],productos=productos)
 
-        else:
-            cur = db.connection.cursor()
-            cur.execute('''SELECT p.*, c.descripcion AS categoria_nombre
-            FROM productos p
-            LEFT JOIN categorias c ON p.categoria = c.id_categ''')
-            productos = cur.fetchall()
-            cur.close()
-            return render_template('productos.html', first_name=session['first_name'],productos=productos,categorias=categorias)
+        
+        cur = db.connection.cursor()
+        cur.execute('''SELECT p.*, c.descripcion AS categoria_nombre
+        FROM productos p
+        LEFT JOIN categorias c ON p.categoria = c.id_categ''')
+        productos = cur.fetchall()
+        cur.close()
+        return render_template('productos.html', first_name=session['first_name'],productos=productos)
     else:
         return redirect(url_for('login'))
 
@@ -134,11 +126,73 @@ def mostrar_producto():
 @app.route('/modificaciones')
 def mostrar_modificacion():
     if 'username' in session:
+        sort_by = request.args.get('sort_by')
+        if sort_by:
+            if sort_by == 'first_name':
+                order_by = 'ORDER BY first_name'
+            elif sort_by == 'producto':
+                order_by = 'ORDER BY producto_nombre'
+            elif sort_by == 'id':
+                order_by = 'ORDER BY id'
+            elif sort_by == 'nro_serie':
+                order_by = 'ORDER BY nro_serie'
+            elif sort_by == 'fecha':
+                order_by = 'ORDER BY fecha_hora DESC'
+        else:
+            order_by = 'ORDER BY fecha_hora DESC'
+        
         cur = db.connection.cursor()
-        cur.execute('SELECT m.*, p.nombre as producto_nombre FROM modificaciones m JOIN productos p ON m.producto_id = p.id ORDER BY m.fecha_hora DESC')
+        cur.execute(f'''SELECT m.*, p.nombre as producto_nombre, p.nro_serie 
+                    FROM modificaciones m 
+                    JOIN productos p ON p.id = m.producto_id  {order_by}''')
         modificaciones = cur.fetchall()
         cur.close()
         return render_template('modificaciones.html', first_name=session['first_name'],modificaciones=modificaciones)
+    else:
+        return redirect(url_for('login'))
+
+#BUSCAR MODIFICACIONES
+@app.route('/buscar-modificacion', methods=['GET', 'POST'])
+def buscar_modificacion():
+    if request.method == 'POST':
+        search_query = request.form.get('search_query')
+        if search_query:
+            # Realiza la consulta a la base de datos para buscar modificaciones por responsable
+            cur = db.connection.cursor()
+            cur.execute("SELECT * FROM modificaciones WHERE username LIKE %s", 
+                        ('%' + search_query + '%', ))
+            productos = cur.fetchall()
+            cur.close()
+            return render_template('modificaciones.html',  first_name=session['first_name'],productos=productos, search_query=search_query)
+        else:
+            return redirect(url_for('mostrar_modificacion'))
+    return redirect(url_for('mostrar_modificacion'))
+
+#MOSTRAR MODIFICACIONES REALIZADAS
+@app.route('/proveedores')
+def mostrar_proveedor():
+    if 'username' in session:
+        '''sort_by = request.args.get('sort_by')
+        if sort_by:
+            if sort_by == 'first_name':
+                order_by = 'ORDER BY first_name'
+            elif sort_by == 'producto':
+                order_by = 'ORDER BY producto_nombre'
+            elif sort_by == 'id':
+                order_by = 'ORDER BY id'
+            elif sort_by == 'nro_serie':
+                order_by = 'ORDER BY nro_serie'
+            elif sort_by == 'fecha':
+                order_by = 'ORDER BY fecha_hora DESC'
+        else:
+            order_by = 'ORDER BY fecha_hora DESC'''
+        
+        cur = db.connection.cursor()
+        cur.execute(f'''SELECT * 
+                    FROM proveedores''')
+        proveedores = cur.fetchall()
+        cur.close()
+        return render_template('proveedores.html', first_name=session['first_name'],proveedores=proveedores)
     else:
         return redirect(url_for('login'))
 
@@ -154,6 +208,27 @@ def mostrar_usuario():
         return render_template('usuarios.html', first_name=session['first_name'],usuarios=usuarios)
     else:
         return redirect(url_for('login'))
+
+#Funcion para la generacion de contraseña 
+def generate_password(min_length=8, max_length=12):
+    # Define los caracteres que se pueden usar en la contraseña, en este caso, letras y numeros
+    characters = string.ascii_letters + string.digits
+    length = random.randint(min_length, max_length)
+    # Genera una contraseña aleatoria
+    password = ''.join(secrets.choice(characters) for i in range(length))
+    return password
+
+#Formato del rut
+def format_rut(run):
+    rut_str = str(run)
+
+    # Valida que el RUT tenga entre 8 y 9 caracteres numéricos
+    if not rut_str.isdigit() or not (8 <= len(rut_str) <= 9):
+        raise ValueError("El RUT debe ser numérico y tener entre 8 y 9 dígitos")
+
+    # Formatear RUT
+    formatted_rut = f"{rut_str[:-7]}.{rut_str[-7:-4]}.{rut_str[-4:-1]}-{rut_str[-1]}"
+    return formatted_rut
 
 #REGISTRO DE USUARIOS
 @app.route('/crear-registro', methods=['GET', 'POST'])
@@ -193,27 +268,6 @@ def crear_registro():
             return render_template('registro.html')
         return render_template('registro.html')
 
-#Funcion para la generacion de contraseña 
-def generate_password(min_length=8, max_length=12):
-    # Define los caracteres que se pueden usar en la contraseña, en este caso, letras y numeros
-    characters = string.ascii_letters + string.digits
-    length = random.randint(min_length, max_length)
-    # Genera una contraseña aleatoria
-    password = ''.join(secrets.choice(characters) for i in range(length))
-    return password
-
-#Formato del rut
-def format_rut(run):
-    rut_str = str(run)
-
-    # Valida que el RUT tenga entre 8 y 9 caracteres numéricos
-    if not rut_str.isdigit() or not (8 <= len(rut_str) <= 9):
-        raise ValueError("El RUT debe ser numérico y tener entre 8 y 9 dígitos")
-
-    # Formatear RUT
-    formatted_rut = f"{rut_str[:-7]}.{rut_str[-7:-4]}.{rut_str[-4:-1]}-{rut_str[-1]}"
-    return formatted_rut
-
 #EDITAR USUARIO
 @app.route('/editar_usuario/<int:id>', methods=['POST'])
 def edit_user(id):
@@ -224,6 +278,12 @@ def edit_user(id):
         last_name = request.form['editLastName']
         run = request.form['editRut']
 
+        try:
+            rut = format_rut(run)
+        except ValueError as e:
+            flash(str(e))
+            return redirect(url_for('mostrar_usuario'))
+
         generate_password_flag = request.form.get('generatePassword')
         if generate_password_flag:
             password = generate_password()
@@ -233,7 +293,7 @@ def edit_user(id):
         else:
             cur = db.connection.cursor()
             cur.execute('UPDATE user SET id_rol = %s, username = %s, first_name = %s, last_name = %s, run = %s WHERE id = %s',
-                (id_rol, username, first_name, last_name, run, id))
+                (id_rol, username, first_name, last_name, rut, id))
             
         db.connection.commit()
         cur.close()
@@ -273,7 +333,7 @@ def buscar_producto():
 #AGREGAR PRODUCTOS
 @app.route('/agregar_productos', methods=['GET', 'POST'])
 def add_product():
-        
+        categorias = get_categories()
         if request.method == 'POST':
             if 'addCategoria' not in request.form:
                 flash('Seleccione opcion en el campo "Categoria".', 'danger')
@@ -301,8 +361,8 @@ def add_product():
 
             flash('Producto agregado!')
             return redirect(url_for('mostrar_producto'))
-
-        return render_template('productos.html')
+        
+        return redirect(url_for('mostrar_producto'))
 
 # Función para obtener categorías
 def get_categories():
@@ -316,37 +376,38 @@ def get_categories():
 @app.route('/editar_producto/<int:id>', methods=['POST'])
 def edit_product(id):
 
-        nro_serie = request.form['editNroSerie']
-        nombre = request.form['editNombre']
-        descripcion = request.form['editDescripcion']
-        ubicacion = request.form['editUbicacion']
-        cantidad = request.form['editCantidad']
-        categoria = request.form['editCategoria']
+            nro_serie = request.form['editNroSerie']
+            nombre = request.form['editNombre']
+            descripcion = request.form['editDescripcion']
+            ubicacion = request.form['editUbicacion']
+            stock = request.form['editCantidad']
+            categoria = request.form['editCategoria']
+            precio = request.form['editPrecio']
+  
+            
+            #Obtiene usuario actual
+            user_id = session['id']
+            first_name = session['first_name']
+            last_name = session['last_name']
 
-        # Obtener el nombre de la nueva categoría
-        cur = db.connection.cursor()
-        cur.execute('SELECT descripcion FROM categorias WHERE id_categ = %s', (categoria,))
-        categoria_nombre = cur.fetchone()['descripcion']
-        cur.close()
+            #Actualizar productos
+            cur = db.connection.cursor()
+            cur.execute('UPDATE productos SET nro_serie = %s, nombre = %s, descripcion = %s, ubicacion = %s, cantidad = %s,categoria = %s, precio = %s WHERE id = %s',
+                    (nro_serie, nombre, descripcion, ubicacion, stock, categoria, precio, id))
+            db.connection.commit()
+            cur.close()
 
-        #Obtiene usuario actual
-        user_id = session['id']
-        username = session['username']
+            #Insertar datos en la tabla modificaciones
+            cur = db.connection.cursor()
+            cur.execute('INSERT INTO modificaciones (producto_id, user_id, first_name, last_name) VALUES(%s,%s,%s,%s)', 
+                        (id, user_id, first_name,last_name))
+            db.connection.commit()
+            cur.close()
 
-        #Registrar modificacion en la base de datos
-        cur = db.connection.cursor()
-        cur.execute('UPDATE user SET nro_serie = %s, nombre = %s, descripcion = %s, ubicacion = %s, cantidad = %s,categoria = %s WHERE id = %s',
-                (nro_serie, nombre, descripcion, ubicacion, cantidad, categoria, id))
-        db.connection.commit()
-
-        #Insertar datos de la modificacion
-        cur = db.connection.cursor()
-        cur.execute('INSERT INTO modificaciones', (id, user_id, username, ))
-        db.connection.commit()
-        cur.close()
-
-        flash('Producto Modificado!')
-        return redirect(url_for('mostrar_producto'))
+            flash('Producto Modificado!')
+            return redirect(url_for('mostrar_producto'))
+        
+       
 
 if __name__ == '__main__':
     app.config.from_object(config['development'])
