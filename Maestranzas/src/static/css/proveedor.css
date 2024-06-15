@@ -1,0 +1,9 @@
+.btn-agregar-p{
+    display: flex;
+    justify-content: right;
+    margin-bottom: 8px;
+  }
+    #btn-agregar{
+      padding: 10px;
+      margin-right: 1rem;
+    }
