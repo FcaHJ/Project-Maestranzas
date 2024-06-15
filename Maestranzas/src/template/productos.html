@@ -9,40 +9,39 @@
 
 {% block body %} 
 <main>
-    <div class="product-table">
-        <h2>INVENTARIO</h2>
+    <header class="product-header">
+        <h2 class="pb-3 pt-2">INVENTARIO</h2>
 
+        <div class="search">
+            <form action="/buscar-producto" method="POST" class="mb-2 search" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar producto" aria-label="Search" name="search_query">
+            </form>
+        </div>
+                
+        <div class="dropdown-product">
+            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownProduct1" data-bs-toggle="dropdown" aria-expanded="false"> 
+                <strong>Ordenar por:</strong>
+            </a>
+            <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownProduct1">
+                <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='nombre') }}">Nombre</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='descripcion') }}">Descripción</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='ubicacion') }}">Ubicación</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='cantidad') }}">Cantidad</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='categoria') }}">Categoría</a></li>
+            </ul>
+        </div>
+    </header>                
+        {% if g.user and g.user['id_rol'] == 2 %}
+        <div class="btn-agregar-p">
+            <button type="button" class="btn btn-success" id="btn-agregar" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                Añadir Producto
+            </button>
+        </div>
+        {% endif %}
         <div class="table-responsive mt-4">
-            <div class="search">
-                <form action="/buscar-producto" method="POST" class="d-flex mb-4 search" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Buscar producto" aria-label="Search" name="search_query">
-                </form>
-            </div>
-            <div class="order d-flex">
-                <p>Ordenar por:</p>
-                <div class="dropdown mx-2 mb-3">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='nombre') }}">Nombre</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='descripcion') }}">Descripción</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='ubicacion') }}">Ubicación</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='cantidad') }}">Cantidad</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('mostrar_producto', sort_by='categoria') }}">Categoría</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            {% if g.user and g.user['id_rol'] == 2 %}
-            <div class="btn-agregar-p">
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-                    <img src="{{ url_for('static',filename='img/agregar.png') }}" class="img-agregar" alt="icon" width="32" height="32">Añadir
-                </button>
-            </div>
-            {% endif %}
 
             {% if productos %}
-            {% if g.user and g.user['id_rol'] == 2 %}
+            {% if g.user and g.user['id_rol'] == 2 or g.user and g.user['id_rol'] == 1  %}
                 {% with messages = get_flashed_messages() %}    
                 {% if messages %}
                 <br>
@@ -64,15 +63,17 @@
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Ubicación</th>
-                        <th>Cantidad</th>
                         <th>Stock</th>
+                        <th>Categoría</th>
                         {% if g.user and g.user['id_rol'] == 2 or g.user and g.user['id_rol'] == 1  %}
                         <th>Modificar</th>
+                        {% endif %}
+                        {% if g.user and g.user['id_rol'] == 3  %}
+                        <th>Carrito</th>
                         {% endif %}
                     </tr>
                 </thead>
                 <tbody>
-                <!-- AGREGAR PDF(QUIZÁ)-->
                 <!-- productos-->
                     {% for data in productos %}
                     <tr>
@@ -83,8 +84,8 @@
                         <td>{{ data.ubicacion }}</td>
                         <td>{{ data.cantidad }}</td>
                         <td>{{ data.categoria_nombre }}</td>
+                        {% if g.user and g.user['id_rol'] == 2 or g.user and g.user['id_rol'] == 1 %}
                         <td>
-                            {% if g.user and g.user['id_rol'] == 2 or g.user and g.user['id_rol'] == 1 %}
                             <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                                 data-bs-target="#editProduct{{ data.id }}">
                                 <i class="bi bi-pencil-fill"></i>
@@ -96,7 +97,7 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Editar Productos</h5>
+                                            <h5 class="modal-title" id="exampleModalLabel">Editar Producto</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
@@ -123,12 +124,19 @@
                                                 </div>
                                                 <div class="row mb-3">
                                                     <div class="col-md-6">
+                                                        <label for="editPrecio{{ data.id }}" class="form-label">Precio:</label>
+                                                        <input type="int" class="form-control" id="editPrecio{{ data.id }}" name="editPrecio"
+                                                        value="{{ data.precio }}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
                                                         <label for="editUbicacion{{ data.id }}" class="form-label">Ubicación:</label>
                                                         <input type="text" class="form-control" id="editUbicacion{{ data.id }}" name="editUbicacion"
                                                         value="{{ data.ubicacion }}" required>
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label for="editCantidad{{ data.id }}" class="form-label">Cantidad:</label>
+                                                        <label for="editCantidad{{ data.id }}" class="form-label">Stock disponible:</label>
                                                         <input type="number" class="form-control" id="editCantidad{{ data.id }}" name="editCantidad"
                                                         value="{{ data.cantidad }}"required>
                                                     </div>
@@ -137,9 +145,14 @@
                                                     <div class="col-md-6">
                                                         <label for="editCategoria{{ data.id }}" class="form-label">Categoría:</label>
                                                         <select class="form-control" id="editCategoria{{ data.id }}" name="editCategoria" required>
-                                                            {% for categoria in categorias %}
-                                                            <option value="{{ categoria.id_categ }}" {% if data.categoria == categoria.id_categ %}selected{% endif %}>{{ categoria.descripcion }}</option>
-                                                            {% endfor %}
+                                                            <option value="1" {% if data.categoria==1 %} selected {% endif
+                                                                %}>Categoría 1</option>
+                                                            <option value="2" {% if data.categoria==2 %} selected {% endif
+                                                                %}>Categoría 2</option>
+                                                            <option value="3" {% if data.categoria==3 %} selected {% endif
+                                                                %}>Categoría 3</option>
+                                                            <option value="4" {% if data.categoria==4 %} selected {% endif
+                                                                %}>Categoría 4</option>
                                                         </select>
                                                     </div>
                                                 </div>         
@@ -150,8 +163,15 @@
                                     </div>
                                 </div>
                             </div>
-                            {% endif %}
                         </td>
+                        {% endif %}
+                        {% if g.user and g.user['id_rol'] == 3  %}
+                        <td>
+                            <button type="button" class="btn btn-info">
+                                <i class="bi bi-cart2"> Agregar</i>
+                            </button>
+                        </td>
+                        {% endif %}
                     {% endfor %}
                     </tr>
                 </tbody>
@@ -161,7 +181,6 @@
             {% endif %}
         </div>
     </div>
-    <!--CENTRAR BOTONES-->
     <!--MODAL AGREGAR PRODUCTOS-->
     <div class="modal fade" id="addProductModal" tabindex="-1"aria-labelledby="exampleModalLabel2" aria-hidden="true">
         <div class="modal-dialog">
@@ -187,14 +206,20 @@
                                 <label for="addDescripcion" class="form-label">Descripción:</label>
                                 <input type="text" class="form-control" id="addDescripcion" name="addDescripcion" required>
                             </div>
+                        </div>
+                        <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="addUbicacion" class="form-label">Ubicación:</label>
                                 <input type="text" class="form-control" id="addUbicacion" name="addUbicacion" required>
                             </div>
+                            <div class="col-md-6">
+                                <label for="addPrecio" class="form-label">Precio:</label>
+                                <input type="int" class="form-control" id="addPrecio" name="addPrecio" required>
+                            </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="addCantidad" class="form-label">Cantidad:</label>
+                                <label for="addCantidad" class="form-label">Stock:</label>
                                 <input type="number" class="form-control" id="addCantidad" name="addCantidad" required>
                             </div>
                         </div>
@@ -203,9 +228,10 @@
                                 <label for="addCategoria" class="form-label">Categoría:</label>
                                 <select class="form-control" id="addCategoria" name="addCategoria" required>
                                     <option selected disabled>Seleccione</option>
-                                    {% for categoria in categorias %}
-                                    <option value="{{ categoria.id_categ }}">{{ categoria.descripcion }}</option>
-                                    {% endfor %}
+                                    <option value="1" id="categoria" name="categoria">Categoría 1</option>
+                                    <option value="2" id="categoria" name="categoria">Categoría 2</option>
+                                    <option value="3" id="categoria" name="categoria">Categoría 3</option>
+                                    <option value="4" id="categoria" name="categoria">Categoría 4</option>
                                 </select>
                             </div>
                         </div>            
@@ -215,7 +241,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    
 </main>
 <script src="{{ url_for('static', filename='js/inventario.js') }}"></script>
 

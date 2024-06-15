@@ -8,60 +8,57 @@
 
 {% block body %}
 <main>
-    <div class="container my-4">
-        <header>
-            <div class="col align-items-center">
-                <h1 class="ms-3">MODIFICACIONES</h1>
-            </div>
-        </header>
-
-        <div class="table-responsive mt-4">
-            <div class="search">
-                <form action="/buscar-modificacion" method="POST" class="d-flex mb-4 search" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Buscar modificación" aria-label="Search" name="search_query">
-                </form>
-            </div>
-            
-            <div class="dropdown ">
-                <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownProduct2" data-bs-toggle="dropdown" aria-expanded="false"> 
-                    <strong>Ordenar por:</strong>
-                </a>
-                <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownProduct2">
-                    <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='id') }}">ID</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='nro_serie') }}">N° serie</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='producto') }}">Producto</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='first_name') }}">Responsable</a></li>
-                </ul>
-            </div>
-            
-
-            {% if modificaciones %}
-            <table class="table" id="modification-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>N° serie producto</th>
-                        <th>Producto</th>
-                        <th>Responsable</th>
-                        <th>Fecha y Hora</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for mod in modificaciones %}
-                    <tr>
-                        <td>{{ mod.id }}</td>
-                        <td>{{ mod.nro_serie }}</td>
-                        <td>{{ mod.producto_nombre }}</td>
-                        <td>{{ mod.first_name }} {{ mod.last_name }}</td>
-                        <td>{{ mod.fecha_hora }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>No hay modificaciones registradas.</p>
-            {% endif %}
+    <header>            
+        <h2 class="pb-3 pt-2">MODIFICACIONES</h2>
+        
+        <div class="search">
+            <form action="/buscar-modificacion" method="POST" class="d-flex mb-2 search" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar modificación" aria-label="Search" name="search_query">
+            </form>
         </div>
+                    
+        <div class="dropdown-product ">
+            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownProduct2" data-bs-toggle="dropdown" aria-expanded="false"> 
+                <strong>Ordenar por:</strong>
+            </a>
+            <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownProduct2">
+                <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='id') }}">ID</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='nro_serie') }}">N° serie</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='producto') }}">Producto</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='first_name') }}">Responsable</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('mostrar_modificacion', sort_by='fecha') }}">Fecha y Hora</a></li>
+            </ul>
+        </div>
+    </header>
+                                
+    <div class="table-responsive mt-4">
+
+        {% if modificaciones %}
+        <table class="table" id="modification-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>N° serie producto</th>
+                    <th>Producto</th>
+                    <th>Responsable</th>
+                    <th>Fecha y Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mod in modificaciones %}
+                <tr>
+                    <td>{{ mod.id }}</td>
+                    <td>{{ mod.nro_serie }}</td>
+                    <td>{{ mod.producto_nombre }}</td>
+                    <td>{{ mod.first_name }} {{ mod.last_name }}</td>
+                    <td>{{ mod.fecha_hora }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay modificaciones registradas.</p>
+        {% endif %}
     </div>
 </main>
 {% endblock %}

@@ -2,12 +2,44 @@
 
 {% block title %}Home{% endblock %}
 
-{% block customCSS %} 
+{% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+
 {% endblock %}
 
-{% block body %} 
+{% block body %}
 <main>
-    <h1>----Contenido usuario----</h1>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <h1>Nosotros</h1>
+            <p>
+                Nos hemos destacado en la fabricación y el mantenimiento de equipos pesados utilizados
+                en la construcción de infraestructura y la explotación minera. Con un equipo de
+                profesionales altamente capacitados y una sólida reputación en la industria, la empresa ha
+                desempeñado un papel crucial en el desarrollo de la región.
+            </p>
+            <p>
+                Nuestra empresa ha demostrado un compromiso continuo con la
+                satisfacción del cliente y la entrega puntual de proyectos, lo que no ha convertido
+                socio confiable para muchas compañías de la región.
+            </p>
+            <hr>
+            <p>
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aliquam, vel animi? 
+                Laborum doloremque repudiandae libero quibusdam, minus similique odio ipsa alias 
+                adipisci veritatis! Laborum harum sed dolor fugit. Doloribus, beatae.
+            </p>
+            <p>
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aliquam, vel animi? 
+                Laborum doloremque repudiandae libero quibusdam, minus similique odio ipsa alias 
+                adipisci veritatis! Laborum harum sed dolor fugit. Doloribus, beatae.
+            </p>
+        </div>
+        <div class="col-md-6">
+            <img src="{{ url_for('static', filename='img/maquinaria.png') }}" alt="img-maquinaria" width="500"
+                height="400">
+        </div>
+    </div>
 </main>
 {% endblock %}
